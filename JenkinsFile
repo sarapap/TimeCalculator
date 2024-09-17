@@ -10,7 +10,7 @@ pipeline {
 
         stage('Build') {
             steps {
-                withEnv(["PATH+MAVEN=/usr/local/opt/maven/bin"]) {
+                withEnv(["PATH+EXTRA=/usr/local/opt/maven/bin:/bin:/usr/bin"]) {
                     sh 'mvn clean install'
                 }
             }
@@ -18,7 +18,7 @@ pipeline {
 
         stage('Test') {
             steps {
-                withEnv(["PATH+MAVEN=/usr/local/opt/maven/bin"]) {
+                withEnv(["PATH+EXTRA=/usr/local/opt/maven/bin:/bin:/usr/bin"]) {
                     sh 'mvn test'
                 }
             }
