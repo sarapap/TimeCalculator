@@ -11,6 +11,7 @@ public class TimeCalculatorTest {
         assertEquals(2.0, calculator.calculateTime(100.0, 50.0), 0.0001);
     }
 
+
     @Test
     public void testCalculateTimeZeroSpeed() {
         TimeCalculator calculator = new TimeCalculator();
