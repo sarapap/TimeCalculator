@@ -33,7 +33,9 @@ pipeline {
 
     post {
         always {
+            // Ensure this path matches where the test reports are actually generated
             junit '**/target/surefire-reports/*.xml'
+            // Ensure this path matches where the JaCoCo reports are actually located
             jacoco execPattern: '**/target/jacoco.exec'
         }
     }
