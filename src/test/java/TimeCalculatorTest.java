@@ -11,12 +11,11 @@ public class TimeCalculatorTest {
         assertEquals(2.0, calculator.calculateTime(100.0, 50.0), 0.0001);
     }
 
-
     @Test
     public void testCalculateTimeZeroSpeed() {
         TimeCalculator calculator = new TimeCalculator();
         assertThrows(IllegalArgumentException.class, () -> {
-            calculator.calculateTime(100, 0);
+            calculator.calculateTime(100.0, 0);
         });
     }
 
@@ -24,7 +23,7 @@ public class TimeCalculatorTest {
     public void testCalculateTimeNegativeSpeed() {
         TimeCalculator calculator = new TimeCalculator();
         assertThrows(IllegalArgumentException.class, () -> {
-            calculator.calculateTime(100, -10);
+            calculator.calculateTime(100.0, -10);
         });
     }
 }
