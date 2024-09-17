@@ -1,4 +1,3 @@
-
 pipeline {
     agent any
 
@@ -11,13 +10,17 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'mvn clean install'
+                withEnv(["PATH+MAVEN=/usr/local/opt/maven/bin"]) {
+                    sh 'mvn clean install'
+                }
             }
         }
 
         stage('Test') {
             steps {
-                sh 'mvn test'
+                withEnv(["PATH+MAVEN=/usr/local/opt/maven/bin"]) {
+                    sh 'mvn test'
+                }
             }
         }
 
@@ -35,4 +38,3 @@ pipeline {
         }
     }
 }
-
