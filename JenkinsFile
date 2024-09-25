@@ -1,42 +1,44 @@
 pipeline {
     agent any
 
+    environment {
+        DOCKERHUB_REPO = 'sarapap/timecalculator'
+        DOCKER_IMAGE_TAG = 'latest'
+    }
+
     stages {
         stage('Checkout') {
             steps {
                 git 'https://github.com/sarapap/TimeCalculator.git'
             }
         }
-
-        stage('Build') {
+        stage('Build Docker Image') {
             steps {
-                withEnv(["PATH+EXTRA=/usr/local/opt/maven/bin:/bin:/usr/bin"]) {
-                    sh 'mvn clean install'
+                script {
+                    // Adding Docker's path to the environment
+                    withEnv(["PATH=/usr/local/bin:/usr/bin:/bin"]) {
+                        docker.build("${DOCKERHUB_REPO}:${DOCKER_IMAGE_TAG}")
+                    }
                 }
             }
         }
-
-        stage('Test') {
+        stage('Push Docker Image to Docker Hub') {
             steps {
-                withEnv(["PATH+EXTRA=/usr/local/opt/maven/bin:/bin:/usr/bin"]) {
-                    sh 'mvn test'
+                script {
+                    withEnv(["PATH=/usr/local/bin:/usr/bin:/bin"]) {
+                        withCredentials([usernamePassword(credentialsId: 'docker_creds',
+                                                         usernameVariable: 'DOCKER_USER',
+                                                         passwordVariable: 'DOCKER_PASS')]) {
+                            sh """
+                                docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
+                                docker build -t ${DOCKER_USER}/timecalculator:version10000 .
+                                docker push ${DOCKER_USER}/timecalculator:version10000
+                                docker logout
+                            """
+                        }
+                    }
                 }
             }
-        }
-
-        stage('Code Coverage') {
-            steps {
-                jacoco execPattern: '**/target/jacoco.exec'
-            }
-        }
-    }
-
-    post {
-        always {
-            // Ensure this path matches where the test reports are actually generated
-            junit '**/target/surefire-reports/*.xml'
-            // Ensure this path matches where the JaCoCo reports are actually located
-            jacoco execPattern: '**/target/jacoco.exec'
         }
     }
 }
